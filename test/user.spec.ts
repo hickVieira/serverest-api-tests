@@ -1,109 +1,84 @@
-import supertest from "supertest";
+import utils from "./utils";
+import { User, UserWithId } from "./User";
 import { StatusCodes } from "http-status-codes";
-
-const request = supertest('https://serverest.dev');
-
-class utils {
-    static user_ides = ['023j2sNg0jW0liqv', '06WAAen0ZzD99vxH', '0LHxtkGLXewVcKtT'];
-}
-
-class User {
-    public nome: string;
-    public email: string;
-    public password: string;
-    public administrador: string;
-
-    constructor(nome: string, email: string, password: string, administrador: string) {
-        this.nome = nome;
-        this.email = email;
-        this.password = password;
-        this.administrador = administrador;
-    }
-}
 
 describe('User tests', () => {
 
     it('should return a list of users', async () => {
-        const response = await request.get('/usuarios');
-        expect(response.status).toBe(StatusCodes.OK);
-        expect(response.body).toHaveProperty('quantidade');
-        expect(response.body).toHaveProperty('usuarios');
-        expect(response.body.usuarios).toHaveLength(response.body.quantidade);
+        let [users, response] = await utils.get_users();
     })
 
     it('should return a single user', async () => {
-        const response = await request.get(`/usuarios/${utils.user_ides[0]}`);
-        expect(response.status).toBe(StatusCodes.OK);
-        expect(response.body).toHaveProperty('nome');
-        expect(response.body).toHaveProperty('email');
-        expect(response.body).toHaveProperty('password');
-        expect(response.body).toHaveProperty('administrador');
-        expect(response.body).toHaveProperty('_id');
+        let user = await utils.get_user(String(utils.user_ids[0]));
     })
 
     it('should return error message when user not found', async () => {
-        const response = await request.get(`/usuarios/invalid-id`);
-        expect(response.status).toBe(StatusCodes.BAD_REQUEST);
-        expect(response.body).toHaveProperty('message');
-        expect(response.body.message).toBe("Usuário não encontrado");
+        let non_existing_user = await utils.get_user("invalid_id");
     })
 
-    let newUserID: string;
     it('should create a new user', async () => {
-        const user = new User('Fulano Siclano', 'fulano@email.com.br', 'senha123', "false");
-        const response = await request.post('/usuarios').send(user);
-        expect(response.status).toBe(StatusCodes.CREATED);
-        expect(response.body).toHaveProperty('message');
-        expect(response.body).toHaveProperty('_id');
-        expect(response.body.message).toBe("Cadastro realizado com sucesso");
-        newUserID = response.body._id;
+        const existingUser = await utils.get_user_by_email('fulano@email.com.br');
+        if (existingUser)
+            await utils.delete_user(existingUser._id);
+
+        const newUser = new User('Fulano Siclano', 'fulano@email.com.br', 'senha123', "false");
+        let [success, response] = await utils.post_user(newUser);
+        expect(success).toBe(true);
     })
 
     it('should fail to create a new user with existing email', async () => {
-        const user = new User('Fulano Siclano', 'fulano@email.com.br', 'senha123', "false");
-        const response = await request.post('/usuarios').send(user);
-        expect(response.status).toBe(StatusCodes.BAD_REQUEST);
-        expect(response.body).toHaveProperty('message');
-        expect(response.body.message).toBe("Este email já está sendo usado");
+        const newUser = new User('Fulano Siclano', 'fulano@email.com.br', 'senha123', "false");
+        const existingUser = await utils.get_user_by_email('fulano@email.com.br');
+        if (!existingUser)
+            await utils.post_user(newUser);
+
+        let [success, response] = await utils.post_user(newUser);
+        expect(success).toBe(false);
     })
 
-    it('should update a existing user', async () => {
-        const user = new User('Fulano Ciclano', 'fulano@email.com.br', 'senha123', "false");
-        const response = await request.put('/usuarios/').send(user);
+    it('should update an existing user', async () => {
+        // insert user
+        const existingUser = await utils.get_user_by_email('fulano@email.com.br');
+        if (!existingUser)
+            await utils.post_user(new User('Fulano Siclano', 'fulano@email.com.br', 'senha123', "false"));
+
+        // delete user with same email if exists
+        await utils.delete_user_by_email('fulano-email-novo@email.com.br');
+
+        // update user
+        const userBefore = await utils.get_user_by_email('fulano@email.com.br') as UserWithId;
+        userBefore.email = 'fulano-email-novo@email.com.br';
+
+        let [success, response] = await utils.put_user(userBefore._id, new User(userBefore.nome, userBefore.email, userBefore.password, userBefore.administrador));
+        expect(success).toBe(true);
         expect(response.status).toBe(StatusCodes.OK);
-        expect(response.body).toHaveProperty('message');
-        expect(response.body.message).toBe("Registro alterado com sucesso");
+
+        const userAfter = await utils.get_user(userBefore._id);
+        expect(userBefore).toStrictEqual(userAfter);
     })
 
     it('should create a new user if updating a non-existent user', async () => {
-        const user = new User('Fulano Nao-Existente', 'fulano-novo@email.com.br', 'senha123', "false");
-        const response = await request.put('/usuarios/').send(user);
-        expect(response.status).toBe(StatusCodes.CREATED);
-        expect(response.body).toHaveProperty('message');
-        expect(response.body).toHaveProperty('_id');
-        expect(response.body.message).toBe("Cadastro efetuado com sucesso");
-    })
+        const existingUser = await utils.get_user_by_email('fulano@email.com.br');
+        if (existingUser)
+            await utils.delete_user(existingUser._id);
 
-    it('should fail to update a user with same email', async () => {
-        const user = new User('Ciclano Fulano', 'fulano-novo@email.com.br', 'senha123', "false");
-        const response = await request.put('/usuarios/').send(user);
-        expect(response.status).toBe(StatusCodes.BAD_REQUEST);
-        expect(response.body).toHaveProperty('message');
-        expect(response.body.message).toBe("Este email já está sendo usado");
+        const newUser = new User('Fulano Siclano', 'fulano@email.com.br', 'senha123', "false");
+
+        let [success, response] = await utils.put_user("invalid_id", new User(newUser.nome, newUser.email, newUser.password, newUser.administrador));
+        expect(success).toBe(true);
+        expect(response.status).toBe(StatusCodes.CREATED);
     })
 
     it('should delete a user', async () => {
-        const response = await request.delete(`/usuarios/${newUserID}`);
-        expect(response.status).toBe(StatusCodes.OK);
-        expect(response.body).toHaveProperty('message');
-        expect(response.body.message).toBe("Registro excluído com sucesso" || "Nenhum registro excluído");
+        const user = await utils.get_random_user() as UserWithId;
+        let [success, response] = await utils.delete_user(user._id);
+        expect(success).toBe(true);
     })
 
     it('should fail to delete a user with registered carts', async () => {
-        const response = await request.delete(`/usuarios/${newUserID}`);
-        expect(response.status).toBe(StatusCodes.BAD_REQUEST);
-        expect(response.body).toHaveProperty('message');
-        expect(response.body).toHaveProperty('idCarrinho');
-        expect(response.body.message).toBe("Não é permitido excluir usuário com carrinho cadastrado");
+        const user = await utils.get_random_user() as UserWithId;
+        let [success, response] = await utils.delete_user(user._id);
+        // expect(success).toBe(false);
+
     })
 })

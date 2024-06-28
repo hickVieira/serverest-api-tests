@@ -1,21 +1,21 @@
+import { StatusCodes } from "http-status-codes";
 import utils from "./utils";
 import { User, UserWithId } from "./User";
-import { StatusCodes } from "http-status-codes";
 
 describe('User tests', () => {
 
-    it('should return a list of users', async () => {
-        let [users, response] = await utils.get_users();
+    it('should get all users', async () => {
+        const [users, response] = await utils.get_users();
     })
 
-    it('should return a single user', async () => {
-        let randomUser = await utils.get_random_user();
-        let user = await utils.get_user(randomUser?._id as string);
+    it('should get user by id', async () => {
+        const randomUser = await utils.get_random_user();
+        const user = await utils.get_user(randomUser?._id as string);
         expect(user?._id).toBe(randomUser?._id);
     })
 
     it('should return error message when user not found', async () => {
-        let non_existing_user = await utils.get_user("invalid_id");
+        const non_existing_user = await utils.get_user("invalid_id");
     })
 
     it('should create a new user', async () => {
@@ -24,7 +24,7 @@ describe('User tests', () => {
             await utils.delete_user(existingUser._id);
 
         const newUser = new User('Fulano Siclano', 'fulano@email.com.br', 'senha123', "false");
-        let [success, response] = await utils.post_user(newUser);
+        const [success, response] = await utils.post_user(newUser);
         expect(success).toBe(true);
     })
 
@@ -34,7 +34,7 @@ describe('User tests', () => {
         if (!existingUser)
             await utils.post_user(newUser);
 
-        let [success, response] = await utils.post_user(newUser);
+        const [success, response] = await utils.post_user(newUser);
         expect(success).toBe(false);
     })
 
@@ -51,7 +51,7 @@ describe('User tests', () => {
         const userBefore = await utils.get_user_by_email('fulano@email.com.br') as UserWithId;
         userBefore.email = 'fulano-email-novo@email.com.br';
 
-        let [success, response] = await utils.put_user(userBefore._id, new User(userBefore.nome, userBefore.email, userBefore.password, userBefore.administrador));
+        const [success, response] = await utils.put_user(userBefore._id, new User(userBefore.nome, userBefore.email, userBefore.password, userBefore.administrador));
         expect(success).toBe(true);
         expect(response.status).toBe(StatusCodes.OK);
 
@@ -66,20 +66,20 @@ describe('User tests', () => {
 
         const newUser = new User('Fulano Siclano', 'fulano@email.com.br', 'senha123', "false");
 
-        let [success, response] = await utils.put_user("invalid_id", new User(newUser.nome, newUser.email, newUser.password, newUser.administrador));
+        const [success, response] = await utils.put_user("invalid_id", new User(newUser.nome, newUser.email, newUser.password, newUser.administrador));
         expect(success).toBe(true);
         expect(response.status).toBe(StatusCodes.CREATED);
     })
 
     it('should delete a user', async () => {
         const user = await utils.get_random_user() as UserWithId;
-        let [success, response] = await utils.delete_user(user._id);
+        const [success, response] = await utils.delete_user(user._id);
         expect(success).toBe(true);
     })
 
     it('should fail to delete a user with registered carts', async () => {
         const user = await utils.get_random_user() as UserWithId;
-        let [success, response] = await utils.delete_user(user._id);
+        const [success, response] = await utils.delete_user(user._id);
         // expect(success).toBe(false);
 
     })

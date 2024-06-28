@@ -2,9 +2,12 @@ import supertest from "supertest";
 import { StatusCodes } from "http-status-codes";
 import { randomInt } from "crypto";
 import { User, UserWithId } from "./User";
+import { Product, ProductWithId } from "./Product";
 
 export default class utils {
     static base_url: string = 'https://serverest.dev';
+
+    // Users
 
     public static async get_users(): Promise<[UserWithId[], supertest.Response]> {
         const response = await supertest(this.base_url).get('/usuarios');
@@ -106,5 +109,40 @@ export default class utils {
             return await utils.delete_user(user._id);
         else
             return Promise.resolve([true, {} as supertest.Response]);
+    }
+
+    // Products
+
+    public static async get_products(): Promise<[ProductWithId[], supertest.Response]> {
+        const response = await supertest(this.base_url).get('/produtos');
+        expect(response.status).toBe(StatusCodes.OK);
+        expect(response.body).toHaveProperty('quantidade');
+        expect(response.body).toHaveProperty('produtos');
+        expect(response.body.produtos).toHaveLength(response.body.quantidade);
+        return Promise.resolve([response.body.produtos as ProductWithId[], response]);
+    }
+
+    public static async get_product(id: string): Promise<ProductWithId | undefined> {
+        const response = await supertest(this.base_url).get(`/produtos/${id}`);
+        switch (response.status) {
+            case StatusCodes.OK:
+                expect(response.status).toBe(StatusCodes.OK);
+                expect(response.body).toHaveProperty('nome');
+                expect(response.body).toHaveProperty('preco');
+                expect(response.body).toHaveProperty('descricao');
+                expect(response.body).toHaveProperty('quantidade');
+                expect(response.body).toHaveProperty('_id');
+                return Promise.resolve(response.body as ProductWithId);
+            default:
+                expect(response.status).toBe(StatusCodes.BAD_REQUEST);
+                expect(response.body).toHaveProperty('message');
+                expect(response.body.message).toBe("Produto não encontrado");
+                return undefined
+        }
+    }
+
+    public static async get_random_product(): Promise<ProductWithId | undefined> {
+        const [products, response] = await utils.get_products();
+        return Promise.resolve(products[randomInt(0, products.length - 1)]);
     }
 }

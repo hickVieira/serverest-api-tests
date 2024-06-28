@@ -9,7 +9,9 @@ describe('User tests', () => {
     })
 
     it('should return a single user', async () => {
-        let user = await utils.get_user(String(utils.user_ids[0]));
+        let randomUser = await utils.get_random_user();
+        let user = await utils.get_user(randomUser?._id as string);
+        expect(user?._id).toBe(randomUser?._id);
     })
 
     it('should return error message when user not found', async () => {

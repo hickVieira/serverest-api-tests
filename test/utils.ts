@@ -1,11 +1,10 @@
 import supertest from "supertest";
 import { StatusCodes } from "http-status-codes";
-import { User, UserWithId } from "./User";
 import { randomInt } from "crypto";
+import { User, UserWithId } from "./User";
 
 export default class utils {
     static base_url: string = 'https://serverest.dev';
-    static user_ids: string[] = ['0uxuPY0cbmQhpEz1', '06WAAen0ZzD99vxH', '0LHxtkGLXewVcKtT'];
 
     public static async get_users(): Promise<[UserWithId[], supertest.Response]> {
         const response = await supertest(this.base_url).get('/usuarios');

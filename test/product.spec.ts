@@ -9,7 +9,7 @@ describe('Product tests', () => {
     })
 
     it('should get product by id', async () => {
-        const randomProduct = await utils.get_random_product();
+        const randomProduct = await utils.find_random_product();
         const product = await utils.get_product(randomProduct?._id as string);
         expect(product?._id).toBe(randomProduct?._id)
     })

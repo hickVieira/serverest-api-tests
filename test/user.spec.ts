@@ -9,7 +9,7 @@ describe('User tests', () => {
     })
 
     it('should get user by id', async () => {
-        const randomUser = await utils.get_random_user();
+        const randomUser = await utils.find_random_user();
         const user = await utils.get_user(randomUser?._id as string);
         expect(user?._id).toBe(randomUser?._id);
     })
@@ -19,7 +19,7 @@ describe('User tests', () => {
     })
 
     it('should create a new user', async () => {
-        const existingUser = await utils.get_user_by_email('fulano@email.com.br');
+        const existingUser = await utils.find_user_by_email('fulano@email.com.br');
         if (existingUser)
             await utils.delete_user(existingUser._id);
 
@@ -30,7 +30,7 @@ describe('User tests', () => {
 
     it('should fail to create a new user with existing email', async () => {
         const newUser = new User('Fulano Siclano', 'fulano@email.com.br', 'senha123', "false");
-        const existingUser = await utils.get_user_by_email('fulano@email.com.br');
+        const existingUser = await utils.find_user_by_email('fulano@email.com.br');
         if (!existingUser)
             await utils.post_user(newUser);
 
@@ -40,7 +40,7 @@ describe('User tests', () => {
 
     it('should update an existing user', async () => {
         // insert user
-        const existingUser = await utils.get_user_by_email('fulano@email.com.br');
+        const existingUser = await utils.find_user_by_email('fulano@email.com.br');
         if (!existingUser)
             await utils.post_user(new User('Fulano Siclano', 'fulano@email.com.br', 'senha123', "false"));
 
@@ -48,7 +48,7 @@ describe('User tests', () => {
         await utils.delete_user_by_email('fulano-email-novo@email.com.br');
 
         // update user
-        const userBefore = await utils.get_user_by_email('fulano@email.com.br') as UserWithId;
+        const userBefore = await utils.find_user_by_email('fulano@email.com.br') as UserWithId;
         userBefore.email = 'fulano-email-novo@email.com.br';
 
         const [success, response] = await utils.put_user(userBefore._id, new User(userBefore.nome, userBefore.email, userBefore.password, userBefore.administrador));
@@ -60,7 +60,7 @@ describe('User tests', () => {
     })
 
     it('should create a new user if updating a non-existent user', async () => {
-        const existingUser = await utils.get_user_by_email('fulano@email.com.br');
+        const existingUser = await utils.find_user_by_email('fulano@email.com.br');
         if (existingUser)
             await utils.delete_user(existingUser._id);
 
@@ -72,13 +72,13 @@ describe('User tests', () => {
     })
 
     it('should delete a user', async () => {
-        const user = await utils.get_random_user() as UserWithId;
+        const user = await utils.find_random_user() as UserWithId;
         const [success, response] = await utils.delete_user(user._id);
         expect(success).toBe(true);
     })
 
     it('should fail to delete a user with registered carts', async () => {
-        const user = await utils.get_random_user() as UserWithId;
+        const user = await utils.find_random_user() as UserWithId;
         const [success, response] = await utils.delete_user(user._id);
         // expect(success).toBe(false);
 

@@ -37,12 +37,12 @@ export default class utils {
         }
     }
 
-    public static async get_random_user(): Promise<UserWithId | undefined> {
+    public static async find_random_user(): Promise<UserWithId | undefined> {
         const [users, response] = await utils.get_users();
         return Promise.resolve(users[randomInt(0, users.length - 1)]);
     }
 
-    public static async get_user_by_email(email: string): Promise<UserWithId | undefined> {
+    public static async find_user_by_email(email: string): Promise<UserWithId | undefined> {
         const [users, response] = await utils.get_users();
         return Promise.resolve(users.find(user => user.email === email));
     }
@@ -104,7 +104,7 @@ export default class utils {
     }
 
     public static async delete_user_by_email(email: string): Promise<[boolean, supertest.Response]> {
-        const user = await utils.get_user_by_email(email) as UserWithId;
+        const user = await utils.find_user_by_email(email) as UserWithId;
         if (user)
             return await utils.delete_user(user._id);
         else
@@ -141,7 +141,7 @@ export default class utils {
         }
     }
 
-    public static async get_random_product(): Promise<ProductWithId | undefined> {
+    public static async find_random_product(): Promise<ProductWithId | undefined> {
         const [products, response] = await utils.get_products();
         return Promise.resolve(products[randomInt(0, products.length - 1)]);
     }

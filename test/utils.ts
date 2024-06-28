@@ -7,6 +7,25 @@ import { Product, ProductWithId } from "./Product";
 export default class utils {
     static base_url: string = 'https://serverest.dev';
 
+    // Login
+
+    public static async login(email: string, password: string): Promise<[boolean, supertest.Response]> {
+        const response = await supertest(this.base_url).post('/login').send({ email, password });
+        switch (response.status) {
+            case StatusCodes.OK:
+                expect(response.status).toBe(StatusCodes.OK);
+                expect(response.body).toHaveProperty('message');
+                expect(response.body).toHaveProperty('authorization');
+                expect(response.body.message).toBe("Login realizado com sucesso");
+                return Promise.resolve([true, response]);
+            default:
+                expect(response.status).toBe(StatusCodes.UNAUTHORIZED);
+                expect(response.body).toHaveProperty('message');
+                expect(response.body.message).toBe("Email e/ou senha inválidos");
+                return Promise.resolve([false, response]);
+        }
+    }
+
     // Users
 
     public static async get_users(): Promise<[UserWithId[], supertest.Response]> {
@@ -144,5 +163,22 @@ export default class utils {
     public static async find_random_product(): Promise<ProductWithId | undefined> {
         const [products, response] = await utils.get_products();
         return Promise.resolve(products[randomInt(0, products.length - 1)]);
+    }
+
+    public static async post_product(product: Product): Promise<[boolean, supertest.Response]> {
+        const response = await supertest(this.base_url).post('/produtos').send(product);
+        switch (response.status) {
+            case StatusCodes.CREATED:
+                expect(response.status).toBe(StatusCodes.CREATED);
+                expect(response.body).toHaveProperty('message');
+                expect(response.body).toHaveProperty('_id');
+                expect(response.body.message).toBe("Cadastro realizado com sucesso");
+                return Promise.resolve([true, response]);
+            default:
+                expect(response.status).toBe(StatusCodes.BAD_REQUEST);
+                expect(response.body).toHaveProperty('message');
+                expect(response.body.message).toBe("Este nome de produtor está sendo usado");
+                return Promise.resolve([false, response]);
+        }
     }
 }

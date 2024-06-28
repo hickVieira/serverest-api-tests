@@ -18,6 +18,12 @@ describe('User tests', () => {
         const non_existing_user = await utils.get_user("invalid_id");
     })
 
+    it('should login successfully', async () => {
+        const user = await utils.find_random_user() as UserWithId;
+        const [success, response] = await utils.login(user.email, user.password);
+        expect(success).toBe(true);
+    })
+
     it('should create a new user', async () => {
         const existingUser = await utils.find_user_by_email('fulano@email.com.br');
         if (existingUser)

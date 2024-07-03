@@ -2,9 +2,7 @@
 This project tests the [ServeRest API](https://serverest.dev/).
 
 ### Tech
-I decided to dump javascript, it is awful.
 - Typescript
-- Cypress
 - Jest
 
 ### Running

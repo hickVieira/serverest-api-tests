@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "main": "src/main.ts",
   "scripts": {
-    "dev": "tsx watch src/main.ts",
-    "build": "npx tsc",
-    "start": "node build/main.js",
     "test": "jest"
   },
   "keywords": [],

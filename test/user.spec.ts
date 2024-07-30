@@ -1,4 +1,3 @@
-import { StatusCodes } from "http-status-codes";
 import utils from "./utils";
 import { User, UserWithId } from "./User";
 
@@ -59,7 +58,7 @@ describe('User tests', () => {
 
         const [success, response] = await utils.put_user(userBefore._id, new User(userBefore.nome, userBefore.email, userBefore.password, userBefore.administrador));
         expect(success).toBe(true);
-        expect(response.status).toBe(StatusCodes.OK);
+        expect(response.status).toBe(200);
 
         const userAfter = await utils.get_user(userBefore._id);
         expect(userBefore).toStrictEqual(userAfter);
@@ -74,7 +73,7 @@ describe('User tests', () => {
 
         const [success, response] = await utils.put_user("invalid_id", new User(newUser.nome, newUser.email, newUser.password, newUser.administrador));
         expect(success).toBe(true);
-        expect(response.status).toBe(StatusCodes.CREATED);
+        expect(response.status).toBe(201);
     })
 
     it('should delete a user', async () => {

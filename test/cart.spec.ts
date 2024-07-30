@@ -10,7 +10,7 @@ describe('Cart tests', () => {
         expect(response.status).toBe(200);
     })
 
-    it("should get a cart", async () => {
+    it("should get a cart by id", async () => {
         const cart = await utils.find_random_cart() as CartGet;
         const [cartFound, response] = await utils.get_cart(cart._id);
         expect(response.status).toBe(200);

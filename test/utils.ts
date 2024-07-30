@@ -22,10 +22,10 @@ export default class utils {
                 expect(response.status).toBe(401);
                 expect(response.body).toHaveProperty('message');
                 expect(response.body.message).toBe("Email e/ou senha inválidos");
-                console.log(response);
+                // console.log(response.body);
                 return Promise.resolve([false, response]);
             default:
-                console.log(response);
+                // console.log(response.body);
                 return Promise.resolve([false, response]);
         }
     }
@@ -56,10 +56,10 @@ export default class utils {
                 expect(response.status).toBe(400);
                 expect(response.body).toHaveProperty('message');
                 expect(response.body.message).toBe("Usuário não encontrado");
-                console.log(response);
+                // console.log(response.body);
                 return undefined
             default:
-                console.log(response);
+                // console.log(response.body);
                 return undefined
         }
     }
@@ -98,10 +98,10 @@ export default class utils {
                 expect(response.status).toBe(400);
                 expect(response.body).toHaveProperty('message');
                 expect(response.body.message).toBe("Este email já está sendo usado");
-                console.log(response);
+                // console.log(response.body);
                 return Promise.resolve([false, response]);
             default:
-                console.log(response);
+                // console.log(response.body);
                 return Promise.resolve([false, response]);
         }
     }
@@ -124,10 +124,10 @@ export default class utils {
                 expect(response.status).toBe(400);
                 expect(response.body).toHaveProperty('message');
                 expect(response.body.message).toBe("Este email já está sendo usado");
-                console.log(response);
+                // console.log(response.body);
                 return Promise.resolve([false, response]);
             default:
-                console.log(response);
+                // console.log(response.body);
                 return Promise.resolve([false, response]);
         }
     }
@@ -145,10 +145,10 @@ export default class utils {
                 expect(response.body).toHaveProperty('message');
                 expect(response.body).toHaveProperty('idCarrinho');
                 expect(response.body.message).toBe("Não é permitido excluir usuário com carrinho cadastrado");
-                console.log(response);
+                // console.log(response.body);
                 return Promise.resolve([false, response]);
             default:
-                console.log(response);
+                // console.log(response.body);
                 return Promise.resolve([false, response]);
         }
     }
@@ -187,10 +187,10 @@ export default class utils {
                 expect(response.status).toBe(400);
                 expect(response.body).toHaveProperty('message');
                 expect(response.body.message).toBe("Produto não encontrado");
-                console.log(response);
+                // console.log(response.body);
                 return undefined
             default:
-                console.log(response);
+                // console.log(response.body);
                 return undefined
         }
     }
@@ -226,22 +226,22 @@ export default class utils {
                 expect(response.status).toBe(400);
                 expect(response.body).toHaveProperty('message');
                 expect(response.body.message).toBe("Já existe produto com esse nome");
-                console.log(response);
+                // console.log(response.body);
                 return Promise.resolve([false, response]);
             case 401:
                 expect(response.status).toBe(401);
                 expect(response.body).toHaveProperty('message');
                 expect(response.body.message).toBe("Token de acesso ausente, inválido, expirado ou usuário do token não existe mais");
-                console.log(response);
+                // console.log(response.body);
                 return Promise.resolve([false, response]);
             case 403:
                 expect(response.status).toBe(403);
                 expect(response.body).toHaveProperty('message');
                 expect(response.body.message).toBe("Rota exclusiva para administradores");
-                console.log(response);
+                // console.log(response.body);
                 return Promise.resolve([false, response]);
             default:
-                console.log(response);
+                // console.log(response.body);
                 return Promise.resolve([false, response]);
         }
     }
@@ -267,22 +267,22 @@ export default class utils {
                 expect(response.status).toBe(400);
                 expect(response.body).toHaveProperty('message');
                 expect(response.body.message).toBe("Este nome de produtor está sendo usado");
-                console.log(response);
+                // console.log(response.body);
                 return Promise.resolve([false, response]);
             case 401:
                 expect(response.status).toBe(401);
                 expect(response.body).toHaveProperty('message');
                 expect(response.body.message).toBe("Token de acesso ausente, inválido, expirado ou usuário do token não existe mais");
-                console.log(response);
+                // console.log(response.body);
                 return Promise.resolve([false, response]);
             case 403:
                 expect(response.status).toBe(403);
                 expect(response.body).toHaveProperty('message');
                 expect(response.body.message).toBe("Rota exclusiva para administradores");
-                console.log(response);
+                // console.log(response.body);
                 return Promise.resolve([false, response]);
             default:
-                console.log(response);
+                // console.log(response.body);
                 return Promise.resolve([false, response]);
         }
     }
@@ -302,22 +302,22 @@ export default class utils {
                 expect(response.body).toHaveProperty('message');
                 expect(response.body).toHaveProperty('idCarrinho');
                 expect(response.body.message).toBe("Não é permitido excluir produto que faz parte de carrinho");
-                console.log(response);
+                // console.log(response.body);
                 return Promise.resolve([false, response]);
             case 401:
                 expect(response.status).toBe(401);
                 expect(response.body).toHaveProperty('message');
                 expect(response.body.message).toBe("Token de acesso ausente, inválido, expirado ou usuário do token não existe mais");
-                console.log(response);
+                // console.log(response.body);
                 return Promise.resolve([false, response]);
             case 403:
                 expect(response.status).toBe(403);
                 expect(response.body).toHaveProperty('message');
                 expect(response.body.message).toBe("Rota exclusiva para administradores");
-                console.log(response);
+                // console.log(response.body);
                 return Promise.resolve([false, response]);
             default:
-                console.log(response);
+                // console.log(response.body);
                 return Promise.resolve([false, response]);
         }
     }
@@ -382,16 +382,16 @@ export default class utils {
                 expect(response.status).toBe(400);
                 expect(response.body).toHaveProperty('message');
                 expect(response.body.message).toBe("Não é permitido possuir produto duplicado" || "Não é permitido ter mais de 1 carrinho" || "Produto não encontrado" || "Produto não possui quantidade suficiente");
-                console.log(response);
+                // console.log(response.body);
                 return Promise.resolve([false, response]);
             case 401:
                 expect(response.status).toBe(401);
                 expect(response.body).toHaveProperty('message');
                 expect(response.body.message).toBe("Token de acesso ausente, inválido, expirado ou usuário do token não existe mais");
-                console.log(response);
+                // console.log(response.body);
                 return Promise.resolve([false, response]);
             default:
-                console.log(response);
+                // console.log(response.body);
                 return Promise.resolve([false, response]);
         }
     }
@@ -410,10 +410,10 @@ export default class utils {
                 expect(response.status).toBe(401);
                 expect(response.body).toHaveProperty('message');
                 expect(response.body.message).toBe("Token de acesso ausente, inválido, expirado ou usuário do token não existe mais");
-                console.log(response);
+                // console.log(response.body);
                 return Promise.resolve([false, response]);
             default:
-                console.log(response);
+                // console.log(response.body);
                 return Promise.resolve([false, response]);
         }
     }
@@ -432,10 +432,10 @@ export default class utils {
                 expect(response.status).toBe(401);
                 expect(response.body).toHaveProperty('message');
                 expect(response.body.message).toBe("Token de acesso ausente, inválido, expirado ou usuário do token não existe mais");
-                console.log(response);
+                // console.log(response.body);
                 return Promise.resolve([false, response]);
             default:
-                console.log(response);
+                // console.log(response.body);
                 return Promise.resolve([false, response]);
         }
     }
